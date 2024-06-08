@@ -28,6 +28,8 @@ module.exports = {
           model: "User",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       categoryId: {
         type: Sequelize.INTEGER,
@@ -36,6 +38,8 @@ module.exports = {
           model: "Category",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
