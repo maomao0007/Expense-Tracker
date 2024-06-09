@@ -2,12 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <link href="/stylesheets/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.1/css/all.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Family Budget Book</title>
 </head>
 <body>
+<header>
+  <div class="d-flex navbar navbar-light bg-light">
+  <nav class="mr-auto p-2">
+  <a class="navbar-brand" href="/">Family Budget Book</a>
+ </nav>
+<div class="p-2">
+ {{> navbar}}
+ </div>
+</div>
+
+</header>
+
 
   {{{ body }}}
   
+
+   <script src="/javascripts/bootstrap.bundle.min.js"></script>
 </body>
 </html>

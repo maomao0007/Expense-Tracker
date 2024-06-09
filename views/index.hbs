@@ -1,1 +1,53 @@
-<h2>Hello world! 這是 index</h2>
+<div class="container d-flex justify-content-center">
+
+<!-- dropdown box -->
+    <div class="col-md-3 d-flex justify-content-center align-items-center m-5">
+      <form action="/Expense-Tracker" method="GET" id="sortForm">
+        <select class="form-select" name="category" id="category" aria-label="category">
+          <!-- 預設選項 -->
+          <option value="name_en_asc">Category</option>
+          <option value="name_en_asc">Housing and Utilities</option>
+          <option value="name_en_desc">Leisure and Entertainment</option>
+          <option value="category_asc">Food and Dining</option>
+          <option value="category_desc">Others</option>
+         </select>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="totalAmount d-flex justify-content-center">
+Total Amount: {{ totalAmount }}
+</div>
+<div class="d-flex justify-content-center">
+<a href="/users/register">Register</a>
+</div>
+
+<ul>
+  {{#each expense as |expense|}}
+    <li>
+      {{expense.name}}
+      <a href="/Expense-Tracker/{{ expense.id }}">detail</a>
+      <a href="/Expense-Tracker/{{ expense.id }}/edit">edit</a>
+      <form action="/Expense-Tracker/{{ expense.id }}?_method=DELETE" method="POST" style="display: inline;">
+        <button type="submit">delete</button>
+      </form>
+    </li>
+  {{/each}}
+</ul>
+
+<div class="d-flex justify-content-center my-4">
+  <a href="/Expense-Tracker/new" class="btn btn-warning btn-lg" role="button">Add Expense</a>
+</div>
+
+<form action="/Expense-Tracker" method="GET" style="display: inline;">
+  <input type="hidden" name="page" value="{{prev}}">
+  <button type="submit">prev</button>
+</form>
+<form action="/Expense-Tracker" method="GET" style="display: inline;">
+  <input type="hidden" name="page" value="{{next}}">
+  <button type="submit">next</button>
+</form>
+<span>page: {{page}}</span>
+
+</div>

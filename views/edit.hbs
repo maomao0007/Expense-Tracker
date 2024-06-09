@@ -1,0 +1,58 @@
+<div class="container mx-auto">
+<form action="/Expense-Tracker" method="POST">
+
+<div class="d-flex justify-content-center m-4">
+    <div class="col-2">
+      * required
+    </div>
+    <div class="col-4">
+      Please enter your expenses.
+    </div>
+</div>
+
+<div class="d-flex justify-content-center m-4">
+    <div class="col-2">
+      <label for="name" class="col-5">Name * :</label>
+    </div>
+    <div class="col-4">
+      <input id="name" class="col-7" type="text" placeholder="Please enter the name of the item." name="name" style="width: 250px;" required/>
+    </div>
+</div>
+<div class="d-flex justify-content-center m-4">
+    <div class="col-2">
+     <label for="date">Date * :</label>
+    </div>
+    <div class="col-4">
+      <input id="date" type="date" name="date" style="width: 250px;" required/>
+    </div>
+</div>
+<div class="d-flex justify-content-center m-4">
+    <div class="col-2">
+     <label for="category">Category * :</label>
+    </div>
+    <div class="col-4">
+      <select id="category" type="text" placeholder="Please enter the name of the item." name="category" style="width: 250px;" required/>
+             <option>-------- Select --------</option>
+            <option>Housing and Utilities</option>
+            <option>Leisure and Entertainment</option>
+            <option>Food and Dining</option>
+            <option>Others</option>
+      </select>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center m-4">
+    <div class="col-2">
+   <label for="amount">Amount * :</label>
+    </div>
+    <div class="col-4">
+       <input id="amount" type="text" placeholder="Please enter the price of the item." name="totalAmount" style="width: 250px;" required/>
+    </div>
+</div>
+
+<div class="d-flex justify-content-center my-4">
+  <button type="submit" class="btn btn-primary" style="width: 200px;">Submit</button>
+</div>
+
+</form>
+</div>
