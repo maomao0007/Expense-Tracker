@@ -20,19 +20,19 @@ app.use(express.urlencoded({ extended: true }));
 // 解析在 public 檔案裡的靜態文件目錄
 app.use(express.static("public"));
 
-  app.get("/", (req, res) => {
+app.get("/", (req, res) => {
     res.render("index");
   })
 
-   app.get("/", (req, res) => {
+app.get("/", (req, res) => {
      res.redirect("/Expense-Tracker");
    });
 
-app.get("/Expense-Tracker", (req, res) => {
-  return expenseTracker.findAll()
-  .then((expenses) => res.send({ expenses}))
-  .catch((err) => res.status(422).json(err))
-});
+// app.get("/Expense-Tracker", (req, res) => {
+//   return expenseTracker.findAll()
+//   .then((expenses) => res.send({ expenses}))
+//   .catch((err) => res.status(422).json(err))
+// });
 
 app.get("/Expense-Tracker/new", (req, res) => {
   return res.render("new")
@@ -78,6 +78,64 @@ app.get("/Expense-Tracker/:id", (req, res, next ) => {
       error.errorMessage = "Failed to load"
       next(error);
     })
+})
+
+app.put("/Expense-Tracker/:id", (req, res, next ) => {
+  const id = req.params.id
+  const userId = req.user.id
+  const categoryId = req.category.id
+
+  return Expense.findByPk(id, {
+    attributes: ["id", "name", "date", "amount", "userId", "categoryId"]
+  })
+    .then((expense) => {
+			if (!expense) {
+				req.flash('error', 'Data not found')
+				return res.redirect('/Expense-Tracker')
+			}
+			if (expense.userId !== userId) { 
+				req.flash('error', 'Unauthorized access')
+				return res.redirect('/Expense-Tracker')
+			}
+   return expense.update(body)
+     .then(() => {
+      req.flash("success", "Edited successfully")
+      res.redirect(`/Expense-Tracker/${id}`)
+     })
+     .catch((error) => {
+      error.errorMessage="Failed to edit"
+      next(error)
+     })
+   })
+})
+
+app.delete("/Expense-Tracker/:id", (req, res, next ) => {
+  const id = req.params.id
+  const userId = req.user.id
+  const categoryId = req.category.id
+
+  return Expense.findByPk(id, {
+    attributes: ["id", "name", "date", "amount", "userId", "categoryId"]
+  })
+    .then((expense) => {
+			if (!expense) {
+				req.flash('error', 'Data not found')
+				return res.redirect('/Expense-Tracker')
+			}
+			if (expense.userId !== userId) { 
+				req.flash('error', 'Unauthorized access')
+				return res.redirect('/Expense-Tracker')
+			}
+  return expense.destroy()
+    .then(() =>{
+     req.flash("success", "Deleted successfully")
+     res.redirect("/Expense-Tracker")
+    })
+    .catch((error) => {
+      error.errorMessage="Failed to delete"
+      next(error)
+    })
+  })
 })
 
 app.listen(port, () => {
