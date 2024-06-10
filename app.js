@@ -1,11 +1,13 @@
 const express = require("express")
 const app = express()
+const port = "3000";
+
 const { engine } = require("express-handlebars");
+const methodOverride = require("method-override");
+const flash = require("connect-flash");
 
 const db = require("./models")
 const expenseTracker = db.expenseTracker;
-
-const port = 3000
 
 const messageHandler = require("./middlewares/message-handler");
 const errorHandler = require("./middlewares/error-handler");
@@ -19,6 +21,15 @@ app.use(express.urlencoded({ extended: true }));
 
 // 解析在 public 檔案裡的靜態文件目錄
 app.use(express.static("public"));
+
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+app.use(flash());
 
 app.get("/", (req, res) => {
     res.render("index");
