@@ -6,11 +6,18 @@
       <form action="/Expense-Tracker" method="GET" id="sortForm">
         <select class="form-select" name="category" id="category" aria-label="category">
           <!-- 預設選項 -->
-          <option value="name_en_asc">Category</option>
-          <option value="name_en_asc">Housing and Utilities</option>
-          <option value="name_en_desc">Leisure and Entertainment</option>
-          <option value="category_asc">Food and Dining</option>
-          <option value="category_desc">Others</option>
+          <option value="category">Category</option>
+          <option value="housing">Housing and Utilities</option>
+          <option value="transportation">Transportation and Commuting</option>
+          <option value="leisure">Leisure and Entertainment</option>
+          <option value="food">Food and Dining</option>
+          <option value="others">Others</option>
+          <option value="name_asc">Others</option>
+          <option value="name_desc">Others</option>
+          <option value="date_asc">Others</option>
+          <option value="date_desc">Others</option>
+          <option value="amount_asc">Amount_DESC</option>
+          <option value="amount_desc">Amount_DESC</option>
          </select>
       </form>
     </div>
@@ -25,7 +32,7 @@ Total Amount: {{ totalAmount }}
 </div>
 
 <ul>
-  {{#each expense as |expense|}}
+  {{#each expenses as |expense|}}
     <li>
       {{expense.name}}
       <a href="/Expense-Tracker/{{ expense.id }}">detail</a>
