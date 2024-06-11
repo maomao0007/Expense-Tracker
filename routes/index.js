@@ -37,6 +37,11 @@ passport.serializeUser((user, done) => {
   return done(null, { id, name, email });
 });
 
+passport.deserializeUser((user, done) => {
+  // 設定資料如何從 session取出
+  done(null, { id: user.id });
+});
+
 router.post(
   "/login",
   passport.authenticate("local", {
@@ -46,5 +51,22 @@ router.post(
   })
 );
   
+const expenses = require("./Expense-Tracker");
+const users = require("./users");
+
+const authHandler = require("../middlewares/auth-handler");
+router.user("/Expense-Tracker", authHandler, expenses);
+router.user("/users", users);
+
+router.post("/logout", (req, res) => {
+  req.logout((error) => {
+    if (error) {
+      next(error)
+    }
+    return res.redirect("login")
+  })
+})
+
+
 // 匯出路由器
 module.exports = router;
