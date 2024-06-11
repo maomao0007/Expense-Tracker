@@ -67,7 +67,7 @@ module.exports = {
             updatedAt: new Date(),
           },
           {
-           id: 4,
+            id: 4,
             name: "Movie: Captain America",
             date: "23.04.2019",
             amount: 220,

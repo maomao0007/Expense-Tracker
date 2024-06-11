@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const db = require("../models");
-const expenseTracker = db.expenseTracker;
+const Expense = db.Expense;
 
 router.get("/", (req, res) => {
   res.render("index");
