@@ -11,6 +11,18 @@ const session = require("express-session");
 const messageHandler = require("./middlewares/message-handler");
 const errorHandler = require("./middlewares/error-handler");
 
+// 引用 handlebars-helpers
+const helpers = require("handlebars-helpers")();
+
+app.engine(
+  "handlebars",
+  engine({
+    defaultLayout: "main",
+    helpers: helpers,
+  })
+);
+app.set("view engine", "handlebars");
+
 if (process.env.NODE_ENV === "development") {
   require("dotenv").config();
 }

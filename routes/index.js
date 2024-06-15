@@ -3,8 +3,27 @@ const express = require("express");
 const router = express.Router();
 const passport = require("passport");
 
+const expenses = require("./expenses");
+const users = require("./users");
+
+const authHandler = require("../middlewares/auth-handler");
+router.use("/Expense-Tracker", authHandler, expenses);
+router.use("/users", users);
+
 router.get("/", (req, res) => {
-  res.render("index");
+  res.redirect("/Expense-Tracker");
+});
+
+router.get("/register", (req, res) => {
+  return res.render("register");
+});
+
+router.get("/login", (req, res) => {
+  return res.render("login");
+});
+
+router.post("/register", (req, res) => {
+  return res.send(req.body);
 });
 
 router.post(
@@ -29,22 +48,15 @@ router.get(
     failureFlash: true,
   })
 );
-  
-const expenses = require("./Expense-Tracker");
-const users = require("./users");
 
-const authHandler = require("../middlewares/auth-handler");
-router.user("/Expense-Tracker", authHandler, expenses);
-router.user("/users", users);
-
-router.post("/logout", (req, res) => {
+router.post("/logout", (req, res, next) => {
   req.logout((error) => {
     if (error) {
-      next(error)
+      return next(error);
     }
-    return res.redirect("/login")
-  })
-})
+    return res.redirect("/login");
+  });
+});
 
 // 匯出路由器
 module.exports = router;

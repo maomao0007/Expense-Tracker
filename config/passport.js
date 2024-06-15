@@ -17,17 +17,17 @@ try {
       return done(null, false, { message: "Incorrect email or password." });
     }
 
-    const isMatch = bcrypt.compare(password, user.password)
+    const isMatch = await bcrypt.compare(password, user.password)
     
     if (!isMatch) {
       return done(null, false, { message: "Incorrect email or password."});
     }
     return done(null, user);  
     }
-    catch((error) => {
+    catch(error) {
         error.errorMessage = "Failed to login";
         done(error)
-    }) 
+    }
   })
 )
 
@@ -44,7 +44,7 @@ passport.use(
       const email = profile.emails[0].value;
       const name = profile.displayName;
 
-      let user =  User.findOne({
+      let user = await User.findOne({
         attributes: ["id", "name", "email"],
         where: { email },
         raw: true,
@@ -59,10 +59,10 @@ passport.use(
 
       return done(null, { id: user.id, name: user.name, email: user.email })
     }
-      catch((error) => {
+      catch(error) {
       error.errorMessage = "Failed to login.";
       done(error)
-    })
+    }
   }
  )
 )
@@ -77,4 +77,4 @@ passport.deserializeUser((user, done) => {
   done(null, { id: user.id });
 });
 
-module.exports = router;
+module.exports = passport;

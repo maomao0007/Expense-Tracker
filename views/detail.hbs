@@ -1,5 +1,5 @@
+{{>message}}
 <div class="container mx-auto">
-<form action="/Expense-Tracker" method="POST">
 
 <div class="d-flex justify-content-center m-4">
     <div class="col-2">
@@ -15,7 +15,7 @@
       <label for="name" class="col-5">Name * :</label>
     </div>
     <div class="col-4">
-      <input id="name" class="col-7" type="text" placeholder="Please enter the name of the item." name="name" style="width: 250px;" required/>
+      <input id="name" class="col-7" type="text" placeholder="Please enter the name of the item." name="name" value="{{expense.name}}" style="width: 250px;" required/>
     </div>
 </div>
 <div class="d-flex justify-content-center m-4">
@@ -23,7 +23,7 @@
      <label for="date">Date * :</label>
     </div>
     <div class="col-4">
-      {{expense.date}}
+      <input id="date" type="date" name="date" value="{{expense.date}}"style="width: 250px;" required/>
     </div>
 </div>
 <div class="d-flex justify-content-center m-4">
@@ -31,32 +31,28 @@
      <label for="category">Category * :</label>
     </div>
     <div class="col-4">
-     {{expense.category}}
+      <select id="category" name="categoryId" style="width: 250px;" required>
+            <option value="">-------- Select --------</option>
+            <option value="1" {{#if (eq expense.categoryId 1)}}selected{{/if}}>Housing and Utilities</option>
+            <option value="2" {{#if (eq expense.categoryId 2)}}selected{{/if}}>Transportation and Commuting</option>
+            <option value="3" {{#if (eq expense.categoryId 3)}}selected{{/if}}>Leisure and Entertainment</option>
+            <option value="4" {{#if (eq expense.categoryId 4)}}selected{{/if}}>Food and Dining</option>
+            <option value="5" {{#if (eq expense.categoryId 5)}}selected{{/if}}>Others</option>
+      </select>
     </div>
 </div>
 
 <div class="d-flex justify-content-center m-4">
-    <div class="col-2">
+  <div class="col-2">
    <label for="amount">Amount * :</label>
     </div>
     <div class="col-4">
-       {{expense.amount}}
+       <input id="amount" type="text" placeholder="Please enter the price of the item." name="amount" value="{{expense.amount}}" style="width: 250px;" required/>
     </div>
-</div>
-
-<div class="d-flex justify-content-center my-4">
-<a href="/Expense-Tracker" class="btn btn-info">Back to Family Budget Book</a>
-</div>
-
- <a href="/Expense-Tracker/{{expense.id}}/edit" class="btn btn-outline-primary me-2">Edit</a>
-<form action="/Expense-Tracker/{{expense.id}}?_method=DELETE" method="POST"
-style="display: inline;">
-<button type="submit" class="btn btn-outline-danger" onclick="return confirmDelete();">Delete</button>
-
-
-<div class="d-flex justify-content-center my-4">
-  <button type="submit" class="btn btn-primary" style="width: 200px;">Submit</button>
-</div>
-
-</form>
+</div> 
+<div class="col text-end">
+  <a href="/Expense-Tracker/{{expense.id}}/edit" class="bt btn-outline-primary me-2">Edit</a>
+  <form action="/Expense-Tracker/{{expense.id}}?_method=DELETE" method="POST" style="display: inline;">
+  <button type="submit" class="btn btn-outline-danger" onclick="return confirmDelete();">Delete</button>
+  </form>
 </div>

@@ -4,7 +4,7 @@
 <!-- dropdown box -->
     <div class="col-md-3 d-flex justify-content-center align-items-center m-5">
       <form action="/Expense-Tracker" method="GET" id="sortForm">
-        <select class="form-select" name="category" id="category" aria-label="category">
+        <select class="form-select" name="sortOptions" id="category" aria-label="category" onchange="this form.submit()">
           <!-- 預設選項 -->
           <option value="category">Category</option>
           <option value="housing">Housing and Utilities</option>
@@ -12,11 +12,11 @@
           <option value="leisure">Leisure and Entertainment</option>
           <option value="food">Food and Dining</option>
           <option value="others">Others</option>
-          <option value="name_asc">Others</option>
-          <option value="name_desc">Others</option>
-          <option value="date_asc">Others</option>
-          <option value="date_desc">Others</option>
-          <option value="amount_asc">Amount_DESC</option>
+          <option value="name_asc">Name_ASC</option>
+          <option value="name_desc">Name_DESC</option>
+          <option value="date_asc">Date_ASC</option>
+          <option value="date_desc">Date_DESC</option>
+          <option value="amount_asc">Amount_ASC</option>
           <option value="amount_desc">Amount_DESC</option>
          </select>
       </form>
@@ -27,35 +27,67 @@
 <div class="totalAmount d-flex justify-content-center">
 Total Amount: {{ totalAmount }}
 </div>
+
+<div class="container d-flex justify-content-center">
+
+{{!-- <div class="d-flex justify-content-center">
+  <ul>
+    {{#each categories as |category|}}
+  <li>
+<i class="{{category.icon}}"></i>
+ </li>
+{{/each}}
+  </ul>
+</div> --}}
+
 <div class="d-flex justify-content-center">
-<a href="/users/register">Register</a>
+  <ul>
+    {{#each expenses as |expense|}}
+  <li>
+    <i class="{{expense.icon}}"></i>
+    {{expense.name}}
+    {{expense.date}}
+    {{expense.amount}}
+    
+
+    {{!-- <a href="/Expense-Tracker/{{ expense.id }}">detail</a> --}}
+    <a href="/Expense-Tracker/{{ expense.id }}/edit">edit</a>
+    <form action="/Expense-Tracker/{{ expense.id }}?_method=DELETE" method="POST" style="display: inline;">
+      <button type="submit">delete</button>
+    </form>
+  </li>
+{{/each}}
+  </ul>
 </div>
 
-<ul>
-  {{#each expenses as |expense|}}
-    <li>
-      {{expense.name}}
-      <a href="/Expense-Tracker/{{ expense.id }}">detail</a>
-      <a href="/Expense-Tracker/{{ expense.id }}/edit">edit</a>
-      <form action="/Expense-Tracker/{{ expense.id }}?_method=DELETE" method="POST" style="display: inline;">
-        <button type="submit">delete</button>
-      </form>
-    </li>
-  {{/each}}
-</ul>
 
-<div class="d-flex justify-content-center my-4">
+</div>
+
+
+</div>
+<div class="d-flex justify-content-center m-4">
   <a href="/Expense-Tracker/new" class="btn btn-warning btn-lg" role="button">Add Expense</a>
 </div>
 
+<div class="d-flex justify-content-center">
 <form action="/Expense-Tracker" method="GET" style="display: inline;">
   <input type="hidden" name="page" value="{{prev}}">
   <button type="submit">prev</button>
 </form>
+
+<span>page: {{page}}</span>
+
 <form action="/Expense-Tracker" method="GET" style="display: inline;">
   <input type="hidden" name="page" value="{{next}}">
   <button type="submit">next</button>
 </form>
-<span>page: {{page}}</span>
+
 
 </div>
+</div>
+
+<script>
+function submitForm() {
+  document.querySelector("#sortForm").submit();
+}
+</script>
