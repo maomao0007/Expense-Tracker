@@ -4,6 +4,16 @@ const router = express.Router();
 const db = require("../models");
 const Expense = db.Expense;
 
+const formatDate = function (date) {
+  const day = ("0" + date.getDate()).slice(-2); // 保證兩位數
+  const month = ("0" + (date.getMonth() + 1)).slice(-2); // 保證兩位數
+  const year = date.getFullYear();
+  // return `${day}/${month}/${year}`;
+  return `${year}-${month}-${day}`;
+};
+// 創建一個新的 Date 對象，代表當前日期和時間
+const date = new Date();
+
 router.get("/", async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 12; // 12 items per page
@@ -71,9 +81,10 @@ router.get("/", async (req, res, next) => {
       raw: true,
     });
 
-    // Map categoryId to icon for each expense
+    // Map categoryId to icon and format date for each expense
     expenses.forEach((expense) => {
       expense.icon = categories[expense.categoryId].icon;
+      expense.formattedDate = formatDate(new Date(expense.date));
     });
 
     res.render("index", {
@@ -110,34 +121,6 @@ router.post("/", (req, res, next) => {
     });
 });
 
-router.get("/:id", (req, res, next) => {
-  const id = req.params.id;
-  const userId = req.user.id;
-  // const categoryId = req.body.id;
-
-  return Expense.findByPk(id, {
-    attributes: ["id", "name", "date", "amount", "userId", "categoryId"],
-    raw: true,
-  })
-    .then((expense) => {
-      if (!expense) {
-        req.flash("error", "Data not found");
-        return res.redirect("/Expense-Tracker");
-      }
-      if (expense.userId !== userId) {
-        req.flash("error", "Unauthorized access");
-        return res.redirect("/Expense-Tracker");
-      }
-      // 在后端输出 id 的值
-     console.log("Expense ID:", expense.id);
-      res.render("detail", { expense });
-    })
-    .catch((error) => {
-      error.errorMessage = "Failed to load";
-      next(error);
-    });
-});
-
 router.get("/:id/edit", (req, res, next) => {
   const id = req.params.id;
   const userId = req.user.id;
@@ -155,10 +138,14 @@ router.get("/:id/edit", (req, res, next) => {
         req.flash("error", "Unauthorized access");
         return res.redirect("/Expense-Tracker");
       }
-      res.render("edit", { expense, categoryId: expense.categoryId });
+      expense.formattedDate = formatDate(new Date(expense.date));
+
+      res.render("edit", {
+        expense,
+        date: expense.formattedDate,
+      });
     })
     .catch((error) => {
-      console.log("categoryId:", expense.categoryId )
       error.errorMessage = "Failed to edit";
       next(error);
     });
@@ -180,10 +167,13 @@ router.put("/:id", (req, res, next) => {
       req.flash("error", "Unauthorized access");
       return res.redirect("/Expense-Tracker");
     }
-    return expense.update({ name, date, amount, categoryId })
+    expense.formattedDate = formatDate(new Date(expense.date));
+    return expense
+      .update({ name, date, amount, categoryId })
       .then(() => {
+        console.log("expense", expense);
         req.flash("success", "Edited successfully");
-        res.redirect(`/Expense-Tracker/${id}`);
+        res.redirect("/Expense-Tracker");
       })
       .catch((error) => {
         error.errorMessage = "Failed to edit";
@@ -219,8 +209,6 @@ router.delete("/:id", (req, res, next) => {
       });
   });
 });
-
-
 
 // 匯出路由器
 module.exports = router;
