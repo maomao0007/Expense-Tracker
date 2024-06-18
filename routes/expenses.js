@@ -8,7 +8,6 @@ const formatDate = function (date) {
   const day = ("0" + date.getDate()).slice(-2); // 保證兩位數
   const month = ("0" + (date.getMonth() + 1)).slice(-2); // 保證兩位數
   const year = date.getFullYear();
-  // return `${day}/${month}/${year}`;
   return `${year}-${month}-${day}`;
 };
 // 創建一個新的 Date 對象，代表當前日期和時間
@@ -19,6 +18,7 @@ router.get("/", async (req, res, next) => {
   const limit = 12; // 12 items per page
   const userId = req.user.id;
   const categoryId = req.query.categoryId;
+  const sortBy = req.query.sortBy;
 
   const categories = {
     1: {
@@ -42,40 +42,46 @@ router.get("/", async (req, res, next) => {
       icon: "fa-solid fa-pen",
     },
   };
-  
-  // 確定排序選項
-  const sortAttributes = req.query.sortAttributes || "name";
-  const sortMethods = req.query.sortMethods || "ASC";
+    // dropdown box setting
+    const sortOptionsMap = {
+      housing_asc: { categoryFilter: 1, order: [["name", "ASC"]] },
+      transportation_asc: { categoryFilter: 2, order: [["name", "ASC"]] },
+      leisure_asc: { categoryFilter: 3, order: [["name", "ASC"]] },
+      food_asc: { categoryFilter: 4, order: [["name", "ASC"]] },
+      others_asc: { categoryFilter: 5, order: [["name", "ASC"]] },
+      name_asc: { order: [["name", "ASC"]] },
+      name_desc: { order: [["name", "DESC"]] },
+      date_asc: { order: [["date", "ASC"]] },
+      date_desc: { order: [["date", "DESC"]] },
+      amount_asc: { order: [["amount", "ASC"]] },
+      amount_desc: { order: [["amount", "DESC"]] },
+    };
 
-  // dropdown box setting
-  const sortOptions = {
-    housing: [["Housing and Utilities", "ASC"]],
-    transportation: [["Transportation and Commuting", "ASC"]],
-    leisure: [["Leisure and Entertainment", "ASC"]],
-    food: [["Food and Dining", "ASC"]],
-    others: [["Others", "ASC"]],
-    name_asc: [["name", "ASC"]],
-    name_desc: [["name", "DESC"]],
-    date_asc: [["date", "ASC"]],
-    date_desc: [["date", "DESC"]],
-    amount_asc: [["amount", "ASC"]],
-    amount_desc: [["amount", "DESC"]],
-  };
-
-  // 確定排序順序，如果不存在則使用默認排序
-  const orderOption = sortOptions[
-    `${sortAttributes}_${sortMethods.toLowerCase()}`
-  ] || [[sortAttributes, sortMethods]];
+  const orderOption = sortOptionsMap[sortBy] || [["name", "ASC"]];
 
   try {
+
+    let whereCondition = { userId };
+    let orderOption = [["name", "ASC"]]; // Default order
+
+    if (sortBy && sortOptionsMap[sortBy]) {
+      const { categoryFilter, order } = sortOptionsMap[sortBy];
+      if (categoryFilter !== undefined) {
+        whereCondition.categoryId = categoryFilter;
+      }
+      if (order) {
+        orderOption = order;
+      }
+    }
     // calculate the total amount of expenses
-    const totalAmount = await Expense.sum("amount", { where: { userId } });
+    const totalAmount = await Expense.sum("amount", { where: whereCondition });
 
     // retrieve all expenses
     const expenses = await Expense.findAll({
       attributes: ["id", "name", "date", "amount", "userId", "categoryId"],
-      where: { userId },
-      order: [orderOption],
+      // where: { userId },
+      where: whereCondition,
+      order: orderOption,
       offset: (page - 1) * limit,
       limit,
       raw: true,
@@ -84,14 +90,18 @@ router.get("/", async (req, res, next) => {
     // Map categoryId to icon and format date for each expense
     expenses.forEach((expense) => {
       expense.icon = categories[expense.categoryId].icon;
+      expense.categoriesName = categories[expense.categoryId].name;
       expense.formattedDate = formatDate(new Date(expense.date));
     });
+    
+      console.log("expenses", expenses);
+ 
 
     res.render("index", {
       expenses,
       totalAmount,
-      categories,
-      order: orderOption,
+      order: sortBy,
+      // filter: categoryId,
       prev: page > 1 ? page - 1 : page, // if the current page > 1 , minus 1 ; otherwise, show the current page
       next: page + 1,
       page, // the current page

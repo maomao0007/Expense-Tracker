@@ -27,21 +27,21 @@
 
 <!-- dropdown box -->
     <div class="col-md-3 d-flex justify-content-center align-items-center m-5">
-      <form action="/Expense-Tracker" method="GET" id="sortForm">
-        <select class="form-select" name="sortOptions" id="category" aria-label="category" onchange="this form.submit()">
+      <form action="/Expense-Tracker" method="GET" id="sortForm" onchange="submitForm()" >
+        <select class="form-select" name="sortBy" id="sortBy" aria-label="category" onchange="this form.submit()">
           <!-- 預設選項 -->
-          <option value="category">Category</option>
-          <option value="housing">Housing and Utilities</option>
-          <option value="transportation">Transportation and Commuting</option>
-          <option value="leisure">Leisure and Entertainment</option>
-          <option value="food">Food and Dining</option>
-          <option value="others">Others</option>
-          <option value="name_asc">Name_ASC</option>
-          <option value="name_desc">Name_DESC</option>
-          <option value="date_asc">Date_ASC</option>
-          <option value="date_desc">Date_DESC</option>
-          <option value="amount_asc">Amount_ASC</option>
-          <option value="amount_desc">Amount_DESC</option>
+          <option value="housing_asc">Housing and Utilities</option>
+          <option value="transportation_asc">Transportation and Commuting</option>
+          <option value="leisure_asc">Leisure and Entertainment</option>
+          <option value="food_asc">Food and Dining</option>
+          <option value="others_asc">Others</option>
+
+          <option value="name_asc">Name ( A -> Z )</option>
+          <option value="name_desc">Name ( Z -> A )</option>
+          <option value="Date_asc">Date ( OLD -> NEW )</option>
+          <option value="Date_desc">Date ( NEW -> OLD )</option>
+          <option value="amount_asc">Amount ( LOW -> HIGH )</option>
+          <option value="amount_desc">Amount ( HIGH -> LOW )</option>
          </select>
       </form>
     </div>
