@@ -3,45 +3,20 @@ const router = express.Router();
 
 const db = require("../models");
 const Expense = db.Expense;
+const Category = db.Category;
 
-const formatDate = function (date) {
-  const day = ("0" + date.getDate()).slice(-2); // 保證兩位數
-  const month = ("0" + (date.getMonth() + 1)).slice(-2); // 保證兩位數
-  const year = date.getFullYear();
-  return `${year}-${month}-${day}`;
+
+const dayjs = require("dayjs");
+const formatDate = (date) => {
+  return dayjs(date).format("YYYY-MM-DD");
 };
-// 創建一個新的 Date 對象，代表當前日期和時間
-const date = new Date();
 
 router.get("/", async (req, res, next) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 12; // 12 items per page
   const userId = req.user.id;
-  const categoryId = req.query.categoryId;
   const sortBy = req.query.sortBy;
 
-  const categories = {
-    1: {
-      name: "Housing and Utilities",
-      icon: "fa-solid fa-house",
-    },
-    2: {
-      name: "Transportation and Commuting",
-      icon: "fa-solid fa-van-shuttle",
-    },
-    3: {
-      name: "Leisure and Entertainment",
-      icon: "fa-solid fa-face-grin-beam",
-    },
-    4: {
-      name: "Food and Dining",
-      icon: "fa-solid fa-utensils",
-    },
-    5: {
-      name: "Others",
-      icon: "fa-solid fa-pen",
-    },
-  };
     // dropdown box setting
     const sortOptionsMap = {
       housing_asc: { categoryFilter: 1, order: [["name", "ASC"]] },
@@ -57,29 +32,21 @@ router.get("/", async (req, res, next) => {
       amount_desc: { order: [["amount", "DESC"]] },
     };
 
-  const orderOption = sortOptionsMap[sortBy] || [["name", "ASC"]];
-
   try {
 
+    const { categoryFilter, order } = sortOptionsMap[sortBy] || {};
     let whereCondition = { userId };
-    let orderOption = [["name", "ASC"]]; // Default order
-
-    if (sortBy && sortOptionsMap[sortBy]) {
-      const { categoryFilter, order } = sortOptionsMap[sortBy];
-      if (categoryFilter !== undefined) {
-        whereCondition.categoryId = categoryFilter;
-      }
-      if (order) {
-        orderOption = order;
-      }
+    if (categoryFilter !== undefined) {
+      whereCondition.categoryId = categoryFilter;
     }
+    const orderOption = order || [["name", "ASC"]];
+
     // calculate the total amount of expenses
     const totalAmount = await Expense.sum("amount", { where: whereCondition });
 
     // retrieve all expenses
     const expenses = await Expense.findAll({
       attributes: ["id", "name", "date", "amount", "userId", "categoryId"],
-      // where: { userId },
       where: whereCondition,
       order: orderOption,
       offset: (page - 1) * limit,
@@ -87,21 +54,32 @@ router.get("/", async (req, res, next) => {
       raw: true,
     });
 
-    // Map categoryId to icon and format date for each expense
+    const categoriesData = await Category.findAll({
+      attributes: ["id", "name", "icon"],
+      raw: true,
+    });
+
+    // Convert category data into an object indexed by id for easy lookup
+    const categoriesMap = {};
+    categoriesData.forEach((category) => {
+      categoriesMap[category.id] = category;
+    });
+
+    // Map categoryId to corresponding icon and name, and format the date
     expenses.forEach((expense) => {
-      expense.icon = categories[expense.categoryId].icon;
-      expense.categoriesName = categories[expense.categoryId].name;
+      const category = categoriesMap[expense.categoryId];
+      if (category) {
+        expense.categoryName = category.name;
+        expense.icon = category.icon;
+      }
       expense.formattedDate = formatDate(new Date(expense.date));
     });
-    
-      console.log("expenses", expenses);
- 
 
     res.render("index", {
       expenses,
+      categoriesData,
       totalAmount,
       order: sortBy,
-      // filter: categoryId,
       prev: page > 1 ? page - 1 : page, // if the current page > 1 , minus 1 ; otherwise, show the current page
       next: page + 1,
       page, // the current page
@@ -178,6 +156,7 @@ router.put("/:id", (req, res, next) => {
       return res.redirect("/Expense-Tracker");
     }
     expense.formattedDate = formatDate(new Date(expense.date));
+    
     return expense
       .update({ name, date, amount, categoryId })
       .then(() => {
