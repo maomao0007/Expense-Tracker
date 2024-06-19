@@ -28,18 +28,17 @@
 <!-- dropdown box -->
     <div class="col-md-3 d-flex justify-content-center align-items-center m-5">
       <form action="/Expense-Tracker" method="GET" id="sortForm" onchange="submitForm()" >
-        <select class="form-select" name="sortBy" id="sortBy" aria-label="category" onchange="this form.submit()">
-          <!-- 預設選項 -->
+        <select class="form-select" name="sortBy" id="sortBy" aria-label="category">
+          <!-- options -->
           <option value="housing_asc">Housing and Utilities</option>
           <option value="transportation_asc">Transportation and Commuting</option>
           <option value="leisure_asc">Leisure and Entertainment</option>
           <option value="food_asc">Food and Dining</option>
           <option value="others_asc">Others</option>
-
           <option value="name_asc">Name ( A -> Z )</option>
           <option value="name_desc">Name ( Z -> A )</option>
-          <option value="Date_asc">Date ( OLD -> NEW )</option>
-          <option value="Date_desc">Date ( NEW -> OLD )</option>
+          <option value="date_asc">Date ( OLD -> NEW )</option>
+          <option value="date_desc">Date ( NEW -> OLD )</option>
           <option value="amount_asc">Amount ( LOW -> HIGH )</option>
           <option value="amount_desc">Amount ( HIGH -> LOW )</option>
          </select>
@@ -110,5 +109,15 @@ function submitForm() {
 function confirmDelete() {
   return confirm("Are you sure you want to delete this expense?");
 }
+
+// When the user selects an option from the dropdown box, that option will be retained.
+const urlParams = new URLSearchParams(window.location.search)
+console.log(urlParams.get('sortBy'))
+const options = document.querySelectorAll('option')
+const target = Array.from(options).find((element) => {
+  return element.value === urlParams.get('sortBy')
+})
+console.log(target)
+target.selected = true
 
 </script>

@@ -5,7 +5,6 @@ const db = require("../models");
 const Expense = db.Expense;
 const Category = db.Category;
 
-
 const dayjs = require("dayjs");
 const formatDate = (date) => {
   return dayjs(date).format("YYYY-MM-DD");
@@ -174,7 +173,6 @@ router.put("/:id", (req, res, next) => {
 router.delete("/:id", (req, res, next) => {
   const id = req.params.id;
   const userId = req.user.id;
-  // const categoryId = req.body.categoryId;
 
   return Expense.findByPk(id, {
     attributes: ["id", "name", "date", "amount", "userId", "categoryId"],
