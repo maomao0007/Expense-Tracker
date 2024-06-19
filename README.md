@@ -90,6 +90,7 @@ This project requires the following software to be installed:
 - bcryptjs 2.4.3
 - bootstrap 5.1.3
 - connect-flash 0.1.1
+- dayjs 1.11.11
 - dotenv 16.4.5
 - express 4.19.2
 - express-handlebars 7.1.2
