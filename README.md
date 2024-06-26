@@ -105,3 +105,13 @@ This project requires the following software to be installed:
 - passport-local 1.0.0
 - sequelize 6.37.3
 - sequelize-cli 6.6.2
+
+## Screenshot
+![screencapture-localhost-3000 ( Login Page )](https://github.com/maomao0007/Expense-Tracker/assets/164178703/7ea507ea-2310-4efc-8b0d-8ddc0119c4c4)
+![screencapture-localhost-3000 ( Home Page )](https://github.com/maomao0007/Expense-Tracker/assets/164178703/bfa73a4e-e0ba-4cd4-9e1e-a42d2cf4184b)
+![screencapture-localhost-3000 ( Create Page)](https://github.com/maomao0007/Expense-Tracker/assets/164178703/3f31d796-a378-4ec9-996e-a7116b454d34)
+
+
+
+
+
